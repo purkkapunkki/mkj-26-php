@@ -26,11 +26,17 @@ global $DBH;
             while ($row = $STH->fetch()) {
                 echo '<tr>';
                 echo '<td>' . $row['title'] . '</td>';
-                echo '<td>' . $row['description'] . '</td>';
+                echo '<td>' . htmlspecialchars($row['description']) . '</td>';
                 echo '<td>' . $row['created_at'] . '</td>';
                 echo '<td>' . $row['username'] . '</td>';
                 echo '<td><img src="' . SITE_URL . 'uploads/' . $row['filename'] . '"></td>';
-                echo '<td><a href="' . SITE_URL . '?operation=modify&media_id=' . $row['media_id'] . '">Modify</a> / Delete</td>';
+                echo '<td>';
+                if($row['user_id'] === $_SESSION['user']['user_id'] || $_SESSION['user']['user_level_id'] === 1):
+                    echo '<a href="' . SITE_URL . '?operation=modify&media_id=' . $row['media_id'] . '">Modify</a>';
+                    echo ' / ';
+                    echo '<a href="' . SITE_URL . '?operation=delete&media_id=' . $row['media_id'] . '">Delete</a>';
+                endif;
+                echo '</td>';
                 echo '</tr>';
             }
         } catch (PDOException $error) {
